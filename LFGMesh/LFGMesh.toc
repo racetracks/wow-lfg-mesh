@@ -1,0 +1,9 @@
+## Interface: 120007, 16001
+## Title: |cff69ccf0LFGMesh|r
+## Notes: Looking-for-group mesh: finds LFG listings across LFG shards.
+## Version: 1.0.0.1
+## Category: LFGMesh
+## Group: LFGMesh
+## IconTexture: Interface\FriendsFrame\Battlenet-Portrait
+
+LFGMesh.lua

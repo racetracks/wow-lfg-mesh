@@ -12,7 +12,7 @@ Purpose: the on-demand half of `CLAUDE.md`, so a session or agent loads only the
 | a UI suite or a UI bug | `docs/baseline/05_UI_SUITES_AND_KNOWN_FIXES.md` |
 | a hook, Blizzard frame, secret value, taint, TOC or API difference | `docs/baseline/reference/wow-api/` |
 | checks, the harness, real saves | `docs/baseline/06_HARNESS.md` |
-| a repo, workflow or release pipeline | `docs/baseline/09_RELEASE_PIPELINE.md`, `docs/baseline/templates/` |
+| a repo, workflow or release pipeline, a version bump or build | `docs/mesh/05_RELEASE.md`, then `docs/baseline/09_RELEASE_PIPELINE.md` (the live `tools/` and `.github/workflows/` win over `docs/baseline/templates/`) |
 | a build, test run, PR or release | `docs/mesh/17_BUILD_PREFERENCES.md` in full |
 | a scratch delivery, test zip, save, handoff | scratch `CLAUDE.md`, scratch `.next/README.md` |
 | agent work (coordinator, budgets, ledger) | `.claude/roles/coordinator.md`, `.claude/agents/consultant.md#budgets`, `.claude/README.md` |

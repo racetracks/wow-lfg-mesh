@@ -1,0 +1,108 @@
+# Publishes a GitHub release whenever the version in LFGMesh/LFGMesh.toc changes
+# on main, after the rules check passes: tags v<version> and attaches
+# LFGMesh-<version>.zip, built by tools/build_zip.sh (the addon folders LFGMesh/
+# and LFGMesh_*/ only, readme.txt and history.txt inside LFGMesh/; nothing else
+# from the repo, checked entry by entry). Does nothing if the release exists.
+# Every version is X.Y.Z.B (B = the build number, which never resets; a release
+# is a build too, baseline 02 F). versions.json (tools/versions.py, never
+# shipped) says what each one is: the latest release, or a pre-release recorded
+# with its PR; a version it does not record is not published. A pre-release's
+# notes are its history section. A full release's notes are its history section
+# only: one summary of every change since the previous release, written at
+# release time from the PRs versions.json lists between the two (02 F5).
+# No mirror repo (baseline 09: the mirror job is dropped when there is none).
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  ADDON: LFGMesh
+
+jobs:
+  rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua 5.1
+        run: sudo apt-get update -q && sudo apt-get install -y -q lua5.1
+      - name: Check rules
+        run: sh tools/check_rules.sh
+
+  release:
+    needs: rules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read version
+        id: v
+        run: |
+          ver=$(sed -n 's/^## Version: *//p' "$ADDON/$ADDON.toc" | tr -d '\r')
+          kind=$(python3 tools/versions.py kind "$ver")
+          if [ "$kind" = unknown ]; then
+            echo "::error::$ver is not in versions.json (sh tools/bump_version.sh records it)"
+            exit 1
+          fi
+          echo "version=$ver" >> "$GITHUB_OUTPUT"
+          echo "kind=$kind" >> "$GITHUB_OUTPUT"
+          if gh release view "v$ver" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Build zip and notes
+        if: steps.v.outputs.exists == 'false'
+        run: |
+          ver=${{ steps.v.outputs.version }}
+          sh tools/build_zip.sh "$ADDON-$ver.zip" HEAD
+          unzip -Z1 "$ADDON-$ver.zip"
+          {
+            echo "**Install:** extract the zip into \`World of Warcraft/<client>/Interface/AddOns/\`."
+            echo
+            if [ "${{ steps.v.outputs.kind }}" = release ]; then
+              prev=$(python3 -c 'import json; print(json.load(open("versions.json"))["releases"][0]["previous"])')
+              echo "### Changes since $prev"
+            else
+              echo "### Changes"
+            fi
+            awk -v v="$ver" '
+              index($0, "=> " v " ") == 1 { on = 1; next }
+              on && /^=> / { exit }
+              on { print }
+            ' history.txt
+            echo
+            echo "Full changelog: history.txt"
+          } > notes.md
+          cat notes.md
+
+      - name: Publish release
+        if: steps.v.outputs.exists == 'false'
+        run: |
+          ver=${{ steps.v.outputs.version }}
+          pre="--latest"
+          [ "${{ steps.v.outputs.kind }}" = release ] || pre="--prerelease"
+          gh release create "v$ver" "$ADDON-$ver.zip" $pre \
+            --target "$GITHUB_SHA" --title "$ADDON $ver" --notes-file notes.md
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Keep pre-releases marked as pre-releases
+        run: |
+          gh release list --limit 100 --json tagName,isPrerelease \
+            --jq '.[] | select(.isPrerelease | not) | .tagName' |
+          while read -r tag; do
+            v=${tag#v}
+            case "$v" in *-*) gh release edit "$tag" --prerelease; continue ;; esac
+            if [ "$(python3 tools/versions.py kind "$v")" = pre-release ]; then gh release edit "$tag" --prerelease; fi
+          done
+        env:
+          GH_TOKEN: ${{ github.token }}
