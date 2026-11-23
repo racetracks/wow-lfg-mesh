@@ -1,6 +1,9 @@
 # Agent operating pack: maintainer notes
 Purpose: maintainer notes for the agent operating pack (for humans; no agent loads it) · Owner: pack maintainers · Status: current · Related: [CLAUDE.md](../CLAUDE.md), [coordinator](roles/coordinator.md)
 
+## This project
+Ported from PourSocialScore on 2026-11-23. Differences: paths `docs/mesh/`, scratch `wow-lfg-mesh_scratch`, env `MESH_*`, code globs `LFGMesh*`; keys re-allocated in this project's registry (scratch `documents/reference-framework/00_References.md`); `docs/baseline/*` exempt from the context caps (vendored unchanged).
+
 ## Install
 1. Copy `CLAUDE.md`, `TASK.template.md` and `.claude/` to the repo root. Merge `.claude/settings.json` hooks into any existing settings.
 2. Add to `.gitignore`: `.claude/.session` and the session root (`sessions/` unless `SESSION_ROOT` is set).
@@ -18,10 +21,10 @@ Requires Python 3.8+ and git (falls back to a tree walk without git). The spawn-
 | Scope fence | `ledger.py ret` | any write outside the agent's Writes (consultants: session directory only; engineers: never specs, briefs, `provision.md`, `context/`) |
 | Spend ledger | `ledger.py ret` / `cont` | silent overruns: BUDGET, ≥1.5× original, TASK cap; extensions need a logged reason |
 | Re-entry cost | `ledger.py spawn` / `ret` / `accept` / `init` (`MODEL engineer`, `OVERRUN`, `EXTEND`, `ACCEPT`, `BRIEF`) | Haiku on a brief not marked "by script"; a re-run for a DONE within 1.5x the ceiling; a consultant turn for a BUDGET return with progress (extension capped at 1.5x, only when cheaper than a re-run); stale checks against the head stored at the last init; one BRIEF round per spawn; `accept TASK --by AID` for work whose agent cannot be continued (`test_ledger_reentry.py`) |
-| Sonnet re-run | `ledger.py ret` / `next` (`RERUN`, `ROUTE re-run`) | an engineer-m1 task that returns BUDGET or fails acceptance (`ret --failed`) is re-run once on engineer; BLOCKED goes to its consultant and the task stays on engineer-m1 (`DEC-00389`) |
-| Token measurement | `ledger.py render` (`## Tokens`) | judging cost cuts by estimate (`DEC-00391`) |
-| Stage close | `tools/stage_close.sh` | a stage closed without the real-save run, the hosted zip or the rendered README (`DEC-00390`) |
-| Context caps | `consultant.md` CONTEXT-CAPS block + `check_context.py`, run by `ledger.py ret` (`SHAPE`) and `tools/check_rules.sh` | documents too big or too unstructured for the next agent's budget; code changed without its documentation (`DOCS`; code itself is never capped); `CLAUDE.md` and its imports growing past the startup cap (`DEC-00384`, `DEC-00385`) |
+| Sonnet re-run | `ledger.py ret` / `next` (`RERUN`, `ROUTE re-run`) | an engineer-m1 task that returns BUDGET or fails acceptance (`ret --failed`) is re-run once on engineer; BLOCKED goes to its consultant and the task stays on engineer-m1 (`DEC-00049`) |
+| Token measurement | `ledger.py render` (`## Tokens`) | judging cost cuts by estimate (`DEC-00051`) |
+| Stage close | `tools/stage_close.sh` | a stage closed without the real-save run, the hosted zip or the rendered README (`DEC-00050`) |
+| Context caps | `consultant.md` CONTEXT-CAPS block + `check_context.py`, run by `ledger.py ret` (`SHAPE`) and `tools/check_rules.sh` | documents too big or too unstructured for the next agent's budget; code changed without its documentation (`DOCS`; code itself is never capped); `CLAUDE.md` and its imports growing past the startup cap (`DEC-00009`, `DEC-00010`) |
 | Zero-token records | `log-prompt.py` hook, `ledger.py render` | the coordinator spending output tokens on logs, task tables and indexes |
 | Stale pack | `ledger.py init` | a pack row whose Writes changed since the pack's `Base commit:` (`git diff --name-only`): `RETRIAGE <t>`, status `stale` |
 | Brief check | `ledger.py spawn` runs `check_context.py --brief <class> <brief>` | an engineer brief without Writes, exact edits, one acceptance block, rules read, or with hedge words and bare file references: refused with `BRIEF` lines and a ROUTE to the stream consultant |
@@ -82,7 +85,7 @@ Scope check limits: it attributes changes by time window, so with parallel agent
 | 2.3 Keep reading-heavy judgement in the main thread | in consultants, reused per stream | coordinator context stays minimal |
 | 2.3 No cheaper sub-agent model → work inline | still delegate; batch harder | production never enters coordinator context |
 | 2.1 T1 ≤5 calls inline; T2 inline with full records | T1 ≤3 calls, no code/tests; all T2+ coordinated | any code change goes to an engineer |
-| 2.5 Executor = small model | `engineer-m1` (Haiku) for `WL`, pilot with `Review: yes` and one Sonnet re-run; `engineer` (Sonnet) for `WM` | the author (`DEC-00389`) |
+| 2.5 Executor = small model | `engineer-m1` (Haiku) for `WL`, pilot with `Review: yes` and one Sonnet re-run; `engineer` (Sonnet) for `WM` | the author (`DEC-00049`) |
 | 1.3 Tool-call budgets only | adds `out` ceiling | output tokens are the main cost |
 
 New since the original: Fit grading (consultant K0), engineer-m3 (consultant K5 gate), `out` budget dimension, Direct tasks, recon lane, scope fence, TASK budget cap, acceptance gate at spawn, engineer-m1 (Haiku) with the Sonnet re-run, token measurement, stage-close script.

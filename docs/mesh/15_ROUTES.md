@@ -16,3 +16,5 @@ Purpose: the on-demand half of `CLAUDE.md`, so a session or agent loads only the
 | a build, test run, PR or release | `docs/mesh/17_BUILD_PREFERENCES.md` in full |
 | a scratch delivery, test zip, save, handoff | scratch `CLAUDE.md`, scratch `.next/README.md` |
 | agent work (coordinator, budgets, ledger) | `.claude/roles/coordinator.md`, `.claude/agents/consultant.md#budgets`, `.claude/README.md` |
+| any document, summary, key, registry row or name | scratch `documents/reference-framework/12_User_Guides/12_02_Documentation_Rules.md` in full (`DEC-00007`); keys: scratch `documents/reference-framework/16_Registries/REGISTRY.md` |
+| a new feature or addon folder's documentation | scratch `documents/reference-framework/08_Operations.md#runbooks` |

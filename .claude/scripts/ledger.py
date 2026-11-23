@@ -276,7 +276,7 @@ def allowed(path, kind, writes):
 
 
 def shape_check(paths):
-    """Context caps (consultant.md#context-caps, DEC-00385) and docs with code (DEC-00384) on a return's files."""
+    """Context caps (consultant.md#context-caps, DEC-00010) and docs with code (DEC-00009) on a return's files."""
     tool = ROOT / ".claude" / "scripts" / "check_context.py"
     files = [str(ROOT / p) for p in paths if (ROOT / p).is_file()]
     if not tool.exists() or not files:
@@ -630,7 +630,7 @@ def write_readme(dest, pack, root):
         "Estimate: per call 30000 cache-read and 2000 input tokens, 12 output tokens per Out line, PRICES in .claude/scripts/ledger.py (assumptions).",
         "", "## Files"] + [f"- [{r}]({url(r)})" for r in sorted(pack["files"])] + ["", "## Keys"]
     keys = sorted({k for r in pack["files"] for k in KEY_RE.findall((dest / r).read_text(errors="replace"))})
-    reg = SCRATCH_URL + "blob/main/documents/registry/REGISTRY.md#"
+    reg = SCRATCH_URL + "blob/main/documents/reference-framework/16_Registries/REGISTRY.md#"
     L += [f"- [{k}]({reg}{k.lower()})" for k in keys] or ["None."]
     rd = dest / "README.md"
     rd.write_text("\n".join(L) + "\n")

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Context caps (DEC-00385) and docs with code (DEC-00384): is what was written cheap for the next
+"""Context caps (DEC-00010) and docs with code (DEC-00009): is what was written cheap for the next
 agent to read, and does every code change carry its documentation? Code itself is never capped.
 
 Caps: the CONTEXT-CAPS block of .claude/agents/consultant.md (#context-caps).

@@ -29,7 +29,7 @@ Choose the cheapest consumption model before any work happens. Read only what cl
 
 | Fit | Class | Agent |
 |---|---|---|
-| `WL` | M1 | `engineer-m1` (Haiku) only when the brief is marked "by script" (expressible as code); any other WL brief spawns on `engineer` (Sonnet), the ledger prints `MODEL engineer`; `Review: yes` during the pilot (`DEC-00389`) |
+| `WL` | M1 | `engineer-m1` (Haiku) only when the brief is marked "by script" (expressible as code); any other WL brief spawns on `engineer` (Sonnet), the ledger prints `MODEL engineer`; `Review: yes` during the pilot (`DEC-00049`) |
 | `WM` | M2 | `engineer`, permitted judgement listed in the brief |
 | `WH` | M3 | `engineer-m3` only through K5; otherwise lower H by design and re-grade |
 | `P*`, `U*` | M3 | `consultant`: design until the follow-on engineer rows grade `W`, which then depend on it |
@@ -37,7 +37,7 @@ Choose the cheapest consumption model before any work happens. Read only what cl
 Two special rows: work with no source reading and no code or test writing, ≤3 calls, goes to `coordinator` (`Fit` = `-`); when grading itself needs a picture of a large code area, provision a `WL` recon task for `engineer-m1` first (script-built `context/<stream>-index.md`: tree, signatures, call sites, grep hits) and grade the rest after it.
 
 When unsure between two grades, take the more conservative one: lower scope, higher complexity. That costs one design pass; an optimistic grade costs a blocked engineer and a re-run.
-M1 lane (`DEC-00392`): peel a mechanical tail out of an M2 task into its own `WL` row only when it is about 6 or more calls; a stream's M1 rows share one brief and one spawn. The ledger re-runs a failed or blocked `engineer-m1` task once on `engineer`, and spawns a WL row whose brief is not marked "by script" on `engineer` from the start.
+M1 lane (`DEC-00052`): peel a mechanical tail out of an M2 task into its own `WL` row only when it is about 6 or more calls; a stream's M1 rows share one brief and one spawn. The ledger re-runs a failed or blocked `engineer-m1` task once on `engineer`, and spawns a WL row whose brief is not marked "by script" on `engineer` from the start.
 4. Size budgets from the defaults below, scaled down to the context listed. Engineer budgets include 2 calls to read `docs/baseline/02_RULES.md` and `docs/mesh/02_RULES.md` in full.
 5. Write `provision.md` as one table, no prose:
 
@@ -72,14 +72,14 @@ Ceilings per spawn or continue. `out` counts lines the agent writes itself; scri
 <!-- BUDGETS:END -->
 
 ## Context caps
-Read cost is part of the budget (`DEC-00385`): each document kind has a cap, so its next reader stays within its ceilings. `.claude/scripts/check_context.py` reads this block; the ledger runs it on every return (`SHAPE`), `check_rules.sh` on every PR (no new problem). First matching row wins; `KB` whole file, `Section` lines under one heading, `Fence` lines of one code block, `-` no cap; "Generated" in the first five lines: exempt.
+Read cost is part of the budget (`DEC-00010`): each document kind has a cap, so its next reader stays within its ceilings. `.claude/scripts/check_context.py` reads this block; the ledger runs it on every return (`SHAPE`), `check_rules.sh` on every PR (no new problem). First matching row wins; `KB` whole file, `Section` lines under one heading, `Fence` lines of one code block, `-` no cap; "Generated" in the first five lines: exempt.
 
 <!-- CONTEXT-CAPS:BEGIN -->
 | Kind | Paths | KB | Section | Fence | Header |
 |---|---|---|---|---|---|
 | startup | `CLAUDE.md` and its `@` imports, together | 30 | - | - | - |
 | spawn | startup plus the largest `.claude/agents/*.md` | 46 | - | - | - |
-| exempt | `docs/linked/*`; `*/reference/*`; `docs/baseline/*/*`; `*/history/*` | - | - | - | - |
+| exempt | `docs/linked/*`; `*/reference/*`; `docs/baseline/*`; `docs/baseline/*/*`; `*/history/*` | - | - | - | - |
 | index | `*/context/*-index.md` | 48 | - | - | no |
 | brief | `*/briefs/*.md` | 8 | 40 | 10 | yes |
 | spec | `*/specs/*.md` | 24 | 60 | 40 | yes |
@@ -92,7 +92,7 @@ Read cost is part of the budget (`DEC-00385`): each document kind has a cap, so 
 
 Header `yes`: a `Purpose:` line or `| Purpose |` row in the first 12 lines (K2 header block).
 
-**Code is never capped** (`DEC-00384`); a code change carries its docs instead (K3 "Docs to update"): `DOCS` from the ledger on a return with code and no document; a PR with code fills its build history `- Docs updated:` line.
+**Code is never capped** (`DEC-00009`); a code change carries its docs instead (K3 "Docs to update"): `DOCS` from the ledger on a return with code and no document; a PR with code fills its build history `- Docs updated:` line.
 
 ## K1. Design for engineers (mode: design)
 Make every judgement here, once, so engineers spend none. Design until each follow-on task grades `W` and its complexity is `L` or `M`.
