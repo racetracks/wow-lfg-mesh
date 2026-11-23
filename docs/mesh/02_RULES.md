@@ -5,7 +5,7 @@ Purpose: the rules this addon adds to `docs/baseline/02_RULES.md`, and its Overr
 Read in full, with the baseline's `02_RULES.md`, before the first change to this repo. The baseline's rules are mandatory; a rule here adds to them, and differs from one only through section 12.
 
 ## 1. Code and style
-- Baseline section A as written. The addon folder, namespace and file prefix are not set yet (proposed `LFGMesh`, prefix `LFGM_`, the author's OK pending); the agent pack's code globs use `LFGMesh*` (`.claude/scripts/check_context.py`). Every other name (documents, folders, files, keys, zips, saves, branches) follows scratch `documents/reference-framework/12_User_Guides/12_02_Documentation_Rules.md` section 5 (`DEC-00047`).
+- Baseline section A as written. The addon folder is `LFGMesh`, its file prefix `LFGM_` (`DEC-00054`); the namespace and global root table are set at stage 1; the agent pack's code globs use `LFGMesh*` (`.claude/scripts/check_context.py`). Every other name (documents, folders, files, keys, zips, saves, branches) follows scratch `documents/reference-framework/12_User_Guides/12_02_Documentation_Rules.md` section 5 (`DEC-00047`).
 
 ## 8. Versions
 - Baseline section F as written: `X.Y.Z.B`, the build number never resets, every build a pre-release, full releases only when the author says so.
@@ -28,3 +28,4 @@ None.
 | --- | --- | --- | --- | --- |
 | 2026-11-23 | this file | created | the author: apply the PSS rules, baseline, budgets and handoff to wow-lfg-mesh | session intelligent-darwin-5smmqv, prompt 01; before: new |
 | 2026-11-23 | section 1 | naming points to `DEC-00047` | the author: port naming conventions | session intelligent-darwin-5smmqv, prompt 02; before: 5df10ad |
+| 2026-11-23 | section 1 | folder and prefix approved | the author's answer | session intelligent-darwin-5smmqv, prompt 03; before: b674cdf |
